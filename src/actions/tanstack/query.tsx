@@ -47,7 +47,7 @@ export const useGetTransaction = (id:string)=>{
 export const useGetAllUsers = ()=>{
   //const queryClient =  useQueryClient()
   const query = useQuery({
-    queryKey:[QUERY_KEYS.GET_TRANSACTIONS],
+    queryKey:[QUERY_KEYS.GET_TRANSACTIONS, QUERY_KEYS.UPDATE_USERS, QUERY_KEYS.GET_NOTIFICATION],
       queryFn: () => getAllUsers(),
     })
 

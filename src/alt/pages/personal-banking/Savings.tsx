@@ -6,7 +6,7 @@ import { FormattedMessage, useIntl } from "react-intl";
 const Savings = () => {
   const { formatMessage } = useIntl();
   return (
-    <div className="w-full h-full py-10">
+    <div className="w-full h-full py-10 bg-s1 text-gray-300">
      
       <div className="w-full flex space-y-3 flex-col items-center justify-center ">
         <p className="text-[10px]">

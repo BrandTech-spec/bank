@@ -1,3 +1,4 @@
+import { useGetUserById } from "@/actions/tanstack/query";
 import { useUserStore } from "@/actions/zustand/userState";
 import HeaderBox from "@/components/HeaderBox";
 import TransactionsTable from "@/components/TransactionsTable";
@@ -190,6 +191,7 @@ const TransactionHistory = () => {
     }
 ]
 const user = useUserStore((state)=> state.user)
+const {data:real_time_user} = useGetUserById(user?.$id!)
   return (
     <div className="transactions">
      
@@ -213,15 +215,15 @@ const user = useUserStore((state)=> state.user)
           </div>
 
           <div className="transactions-account-balance">
-            <p className="text-14">Current balance</p>
+            <p className="text-14">Solde actuel</p>
             <p className="text-24 text-center font-bold">
-              {formatAmount(account[1].currentBalance)}
+              {formatAmount(real_time_user?.amount)}
             </p>
           </div>
         </div>
 
         <section className="flex w-full flex-col gap-6">
-          <TransactionsTable transactions={transaction} />
+          <TransactionsTable />
           {/*totalPages > 1 && (
             <div className="my-4 w-full">
               <Pagination totalPages={totalPages} page={currentPage} />

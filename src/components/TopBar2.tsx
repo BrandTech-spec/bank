@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,60 +9,55 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
 import HomeNavigation from "./HomeNavigation";
-import { LogIn } from "lucide-react";
 const TopBar2 = () => {
   const types = {
     MODAL: "modal",
     LINK: "link",
   };
   const routs = [
-    { name: "Accueil", path: "", type: types.LINK, subPaths: [] },
-    { name: "À propos de nous", path: "about", type: types.LINK, subPaths: [] },
+    { name: "Home", path: "/home", type: types.LINK, subPaths: [] },
+    { name: "About Us", path:"/about", type: types.LINK, subPaths: [] },
     {
-      name: "Banque personnelle",
-      path: "personal-banking/savings",
+      name: "Personal Banking",
+      path: "",
       type: types.MODAL,
       subPaths: [
-        { name: "Économies", path: "personal-banking/savings" },
-        { name: "Comptes courants", path: "personal-banking/checking" },
-        { name: "Investissement & Retraite", path: "personal-banking/pension" },
-        { name: "Carte de crédit", path: "personal-banking/card" },
+        { name: "Savings", path:"/personal-banking/savings" },
+        { name: "Checkings", path:"/personal-banking/checking" },
+        { name: "Investment & Retirement", path:"/personal-banking/pension" },
+        { name: "Credit Card", path:"/personal-banking/card" },
       ],
     },
-    {
-      name: "Banque d'affaires",
-      path: "business-banking/savings",
-      type: types.MODAL,
-      subPaths: [
-        { name: "Économies", path: "business-banking/checking" },
-        { name: "Comptes courants", path: "business-banking/checking" },
-        { name: "Investissement & Retraite", path: "business-banking/checking" },
-        { name: "Carte de crédit", path: "business-banking/checking" },
-      ],
-    },
-    { name: "Contactez-nous", path: "/contact-us", type: types.LINK, subPaths: [] },
-];
 
+    { name: "Contact Us", path: "/contact-us", type: types.LINK, subPaths: [] },
+    { name: "Sign up", path: "/sign-up", type: types.LINK, subPaths: [] },
+    { name: "Sign in", path: "/sign-in", type: types.LINK, subPaths: [] },
+  ];
 
   const [open, setOpen] = useState(false);
   const [style, setStyle] = useState("Savings")
   return (
-    <div className=" flex items-center justify-between px-5 lg:px-20 lg:py-16 z-50  gap-5 fixed top-0 inset-x-0 ring-1 bg-white ring-white">
+    <div className=" flex items-center justify-between py-3 px-2 lg:px-20 z-50  gap-5 fixed top-0 inset-x-0 bg-si text-gray-400">
       <div>
         <Link
           to="/home"
-          className=" z-50 cursor-pointer flex items-center gap-2"
+          className="mb-12 z-50 cursor-pointer flex items-center gap-2"
         >
-          <img src="./images/logo.svg" alt="" />
+          <img
+            src="./icons/logo.svg"
+            alt="Horizon logo"
+            className="size-[24px] w-34 h-34 max-xl:size-14"
+          />
+          <h1 className=" h6 font-bold  text-s5">Horizon Finance</h1>
         </Link>
       </div>
       <div className="flex max-md:hidden items-center justify-center gap-3 text-xs font-bold">
         {routs.map((rout) => {
           if (rout.type === types.LINK) {
             return (
-              <Link className="cursor-pointer" key={rout.name} to={rout.path}>
+              <NavLink className="cursor-pointer" key={rout.name} to={rout.path}>
                 {rout.name}
-              </Link>
+              </NavLink>
             );
           } else if (rout.type === types.MODAL) {
             return (
@@ -70,10 +65,10 @@ const TopBar2 = () => {
                 <DropdownMenuTrigger className="outline-none border-0 ring-0 cursor-pointer">{rout.name}</DropdownMenuTrigger>
                 <DropdownMenuContent className="bg-white px-4">
                   {rout.subPaths.map((path, i) => (
-                    <Link key={i} to={path.path} className={`space-y-2 hover:bg-blue-300 ${path.path.includes(style) && "bg-blue-400"}`} >
+                    <NavLink key={i} to={path.path} className={`space-y-2 hover:bg-blue-300 ${path.path.includes(style) && "bg-blue-400"}`} >
                       <DropdownMenuLabel>{path.name}</DropdownMenuLabel>
                       <DropdownMenuSeparator className={`bg-gray-200 text-gray-200 ${i === rout.subPaths.length-1 && "hidden"} `} />
-                    </Link>
+                    </NavLink>
                   ))}
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -81,18 +76,10 @@ const TopBar2 = () => {
           }
         })}
       </div>
- <Link to="/sign-up " className="btn max-md:hidden">Sign Up</Link>
 
-<section className="flex items-center lg:hidden  justify-center gap-3">
-  <Link to="/sign-up " className="btn"><LogIn/></Link>
-  <div className="">
+      <div className="lg:hidden mb-12 md:block">
           <HomeNavigation/>
       </div>
-</section>
-      
-     
-
-      
     
     </div>
   );

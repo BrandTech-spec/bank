@@ -5,7 +5,7 @@ const LandingImages = ({title, general_page, current_page}:{title:string, genera
   const {pathname} = useLocation()
     const HomeBackground = "./img/bank_icons/business-solution.jpg"
   return (
-    <div style={{background:`linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.7)),url("${HomeBackground}")`}} className={`flex text-white bg-appointments   bg-cover bg-no-repeat w-full object-cover h-[200px] flex-col items-center  py-11 ${pathname.includes("home") && "hidden" }`}>
+    <div style={{background:`url("${HomeBackground}")`}} className={`flex text-white bg-appointments   bg-cover bg-no-repeat w-full object-cover h-[200px] flex-col items-center  py-11 ${pathname.includes("home") && "hidden" }`}>
         <div className="border-l-[3px] space-y-3 border-blue-600 px-2">
             <h1 className="lg:text-6xl text-3xl font-bold">{title}</h1>
             <span className="flex items-center text-xs justify-center gap-1">

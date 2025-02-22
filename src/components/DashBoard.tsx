@@ -200,23 +200,10 @@ const DashBoard = () => {
 const navigate = useNavigate()
 const [isLoading, setIsLoading] = useState(false);
 const [admin, setAdmin] = useState<Models.Document>([])
+
+
 const user = useUserStore((state) =>state.user)
-const {data} = useGetTransaction("54454555")
-const checkAuthUser = async () => {
-  setIsLoading(true);
-  try {
-   
-    
-
-   
-  }catch (error) {
-    console.error(error);
-    return false;
-  } finally {
-    setIsLoading(false);
-  }
-};
-
+const {data} = useGetTransaction(user?.userId)
 const getAdmin = async()=>{
    const admin = await getAdmine()
    setAdmin(admin)
@@ -258,11 +245,7 @@ const {data:real_time_user} = useGetUserById(user?.$id!)
         
       </div>
       <RightSidebar user={user!} />
-      <Services
-       receiver={admin?.userId}
-        sender={user?.userId}
-        admin={user?.admin}
-      />
+      
     </section>
   );
 };

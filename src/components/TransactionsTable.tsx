@@ -1,4 +1,5 @@
 import { useGetTransaction } from "@/actions/tanstack/query"
+import { useUserStore } from "@/actions/zustand/userState"
 import {
   Table,
   TableBody,
@@ -13,7 +14,7 @@ import { CategoryBadgeProps, Transaction, TransactionTableProps } from "@/types"
 import { Models } from "appwrite"
 import { Loader2 } from "lucide-react"
 
-const CategoryBadge = ({ category }: CategoryBadgeProps) => {
+ const CategoryBadge = ({ category }: CategoryBadgeProps) => {
   const {
     borderColor,
     backgroundColor,
@@ -23,14 +24,21 @@ const CategoryBadge = ({ category }: CategoryBadgeProps) => {
    
   return (
     <div className={cn('category-badge', borderColor, chipBackgroundColor)}>
-      <div className={cn('size-2 rounded-full', backgroundColor)} />
-      <p className={cn('text-[12px] font-medium', textColor)}>{category}</p>
+      <div className={cn('size-2 rounded-full', `${category === 'failed' ?
+                  'bg-[#f04438]'
+                  : category === 'sucess' ? 'bg-[#039855]' :"bg-orange-700"
+              }`)} />
+      <p className={cn('text-[12px] font-medium', `${category === 'failed' ?
+                  'text-[#f04438]'
+                  : category === 'sucess' ? 'text-[#039855]' :"text-orange-700"
+              }`)}>{category}</p>
     </div>
   )
 } 
 
 const TransactionsTable = () => {
-  const {data:transactions, isPending} = useGetTransaction("54454555")
+  const user = useUserStore((state)=> state.user)
+  const {data:transactions, isPending} = useGetTransaction(user?.userId)
 
   return (
     <Table>

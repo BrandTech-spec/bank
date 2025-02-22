@@ -8,6 +8,8 @@ import { Loader2, LogOut } from "lucide-react";
 const AdminPage = () => {
   const { data, isPending } = useGetAllUsers();
   console.log(data);
+  const oldUser = data?.filter((u) => u?.status === "ancien")
+  const newUser = data?.filter((u) => u?.status === "nouveau")
 
   return (
     <div className="mx-auto flex min-h-screen w-full text-white bg-dark-100 flex-col space-y-14">
@@ -42,20 +44,20 @@ const AdminPage = () => {
         <section className="admin-stat">
           <StatCard
             type="appointment"
-            count={5}
-            label="Scheduled appointments"
+            count={data?.length!}
+            label="Nombre total d'utilisateurs"
             icon={"./assets/icons/appointments.svg"}
           />
           <StatCard
             type="pending"
-            count={2}
-            label="Pending appointments"
+            count={newUser?.length!}
+            label="Nouveaux utilisateurs"
             icon={"./assets/icons/pending.svg"}
           />
           <StatCard
             type="cancelled"
-            count={2}
-            label="Cancelled appointments"
+            count={oldUser?.length!}
+            label="Anciens utilisateurs"
             icon={"./assets/icons/cancelled.svg"}
           />
         </section>

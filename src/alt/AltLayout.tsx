@@ -57,17 +57,17 @@ const AltLayout = () => {
   }, [pathname])
   
   return (
-    <main className="flex h-screen w-full font-inter">
-      <div className="relative py-36 px-2 w-full h-full">
+    <main className="flex h-screen bg-s1 w-full font-inter">
+      <div className="relative py-36  w-full h-full">
         <TopBar2 />
         <LandingImages
           title={landingProps.title}
           general_page={landingProps.generalPage}
           current_page={landingProps.currentPage}
         />
-        <div className={`flex pt-10  flex-row w-full items-start justify-center px-2 ${pathname.includes("home") || pathname.includes("about") ? "lg:px-2" : "lg:px-72" }`}>
+        <div className={`flex pt-10 bg-s1  flex-row w-full items-start justify-center  ${pathname.includes("home") || pathname.includes("about") ? "" : "lg:px-72" }`}>
           <AlternateRightBar />
-          <div className="flex-1 pt-10 flex">
+          <div className="flex-1  pt-10 flex">
             <Outlet />
             
           </div>

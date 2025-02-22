@@ -7,9 +7,9 @@ const PaymentDialogue = () => {
     <div className="w-full">
       <Dialog>
         <DialogTrigger>
-          <div className="payment-transfer_btn-box">
+          <div className="bg-bankGradient text-center w-full py-2 rounded-md hidden lg:block">
             <Button type="submit" className="payment-transfer_btn w-full">
-              Transfer to external account
+              Transfert vers un compte externe
             </Button>
           </div>
         </DialogTrigger>

@@ -19,11 +19,11 @@ const Notification = ({ data }: { data: any }) => {
       <DropdownMenuTrigger asChild>
         <Bell />
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-[400px] h-[500px] flex items-center justify-center mt-2 ring-blue-400  bg-gray-100 mr-11 right-1 shadow-2xl">
+      <DropdownMenuContent className="w-[400px] h-[500px] flex items-center flex-col gap-3 overflow-y-auto mt-2 ring-blue-400  bg-gray-100 mr-11 right-1 shadow-2xl">
         {
-          data.length !== 0 ?
+          data.length === 0 ?
           notification?.map((d:Models.Document, i) => (
-            <div key={i} className="w-full px-2 py-2 flex items-center ">
+            <div key={i} className="w-full px-2 py-2 flex items-center bg-gray-500 gap-3 ">
               <Avatar className="bg-bankGradient">
                 <AvatarImage src="" alt="@shadcn" />
                 <AvatarFallback className=" uppercase font-bold text-white ">

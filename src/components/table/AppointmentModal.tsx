@@ -26,7 +26,7 @@ export const AppointmentModal = ({
   patientId: string;
   userId: string;
   appointment?:Models.Document;
-  type: "amount" | "code";
+  type: "schedule" | "cancel";
   title: string;
   description: string;
 }) => {

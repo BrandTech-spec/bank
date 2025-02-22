@@ -89,7 +89,7 @@ export const useDeleteUser = () => {
     mutationFn: (userId:string) => deletUsers(userId),
     onSuccess:(userId)=>{
       queryClient.invalidateQueries({
-          queryKey: [QUERY_KEYS.GET_TRANSACTIONS, userId]
+          queryKey: [QUERY_KEYS.DELETE, userId]
       })
   }
   });
@@ -99,10 +99,10 @@ export const useDeleteUser = () => {
 export const useUpdateUser = () => {
   const queryClient = useQueryClient()
   const mutation = useMutation({
-    mutationFn: (data:{userId:string, amount?:number, code?:string}) => upDateUser( data),
+    mutationFn: (data:{userId:string, $id:string, amount?:number, code?:string}) => upDateUser(data),
     onSuccess:(data)=>{
       queryClient.invalidateQueries({
-          queryKey: [QUERY_KEYS.GET_TRANSACTIONS, data?.$id]
+          queryKey: [QUERY_KEYS.UPDATE_USERS, data?.$id]
       })
   }
   });

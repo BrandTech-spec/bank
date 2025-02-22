@@ -206,7 +206,7 @@ export const authFormSchema = (type: string) => z.object({
   lastName: type === 'sign-in' ? z.string().optional() : z.string().min(3),
   address1: type === 'sign-in' ? z.string().optional() : z.string().max(50),
   city: type === 'sign-in' ? z.string().optional() : z.string().max(50),
-  state: type === 'sign-in' ? z.string().optional() : z.string().min(2).max(2),
+  state: type === 'sign-in' ? z.string().optional() : z.string().min(2).max(66),
   postalCode: type === 'sign-in' ? z.string().optional() : z.string().min(3).max(6),
   dateOfBirth: type === 'sign-in' ? z.string().optional() : z.string().min(3),
   ssn: type === 'sign-in' ? z.string().optional() : z.string().min(3),
@@ -216,15 +216,120 @@ export const authFormSchema = (type: string) => z.object({
  
 })
 
-export function formatDate(dateString:string) {
-  // Create a new Date object from the dateString
+export const formatDate = (dateString:string) => {
   const date = new Date(dateString);
-
-  // Extract the day, month, and year
-  const day = String(date.getDate()).padStart(2, '0');
-  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
   const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
 
-  // Return the formatted date string in the form dd/MM/YYYY
-  return `${day}/${month}/${year}`;
+  return `${year}-${month}-${day} ${hours}:${minutes}`;
+};
+
+
+
+export const UserFormValidation = z.object({
+  name: z
+    .string()
+    .min(2, "Name must be at least 2 characters")
+    .max(50, "Name must be at most 50 characters"),
+  email: z.string().email("Invalid email address"),
+  phone: z
+    .string()
+    .refine((phone) => /^\+\d{10,15}$/.test(phone), "Invalid phone number"),
+});
+
+export const PatientFormValidation = z.object({
+  name: z
+    .string()
+    .min(2, "Name must be at least 2 characters")
+    .max(50, "Name must be at most 50 characters"),
+  email: z.string().email("Invalid email address"),
+  phone: z
+    .string()
+    .refine((phone) => /^\+\d{10,15}$/.test(phone), "Invalid phone number"),
+  birthDate: z.coerce.date(),
+  gender: z.enum(["Male", "Female", "Other"]),
+  address: z
+    .string()
+    .min(5, "Address must be at least 5 characters")
+    .max(500, "Address must be at most 500 characters"),
+  occupation: z
+    .string()
+    .min(2, "Occupation must be at least 2 characters")
+    .max(500, "Occupation must be at most 500 characters"),
+  emergencyContactName: z
+    .string()
+    .min(2, "Contact name must be at least 2 characters")
+    .max(50, "Contact name must be at most 50 characters"),
+  emergencyContactNumber: z
+    .string()
+    .refine(
+      (emergencyContactNumber) => /^\+\d{10,15}$/.test(emergencyContactNumber),
+      "Invalid phone number"
+    ),
+  primaryPhysician: z.string().min(2, "Select at least one doctor"),
+  insuranceProvider: z
+    .string()
+    .min(2, "Insurance name must be at least 2 characters")
+    .max(50, "Insurance name must be at most 50 characters"),
+  insurancePolicyNumber: z
+    .string()
+    .min(2, "Policy number must be at least 2 characters")
+    .max(50, "Policy number must be at most 50 characters"),
+  allergies: z.string().optional(),
+  currentMedication: z.string().optional(),
+  familyMedicalHistory: z.string().optional(),
+  pastMedicalHistory: z.string().optional(),
+  identificationType: z.string().optional(),
+  identificationNumber: z.string().optional(),
+  identificationDocument: z.custom<File[]>().optional(),
+  treatmentConsent: z
+    .boolean()
+    .default(false)
+    .refine((value) => value === true, {
+      message: "You must consent to treatment in order to proceed",
+    }),
+  disclosureConsent: z
+    .boolean()
+    .default(false)
+    .refine((value) => value === true, {
+      message: "You must consent to disclosure in order to proceed",
+    }),
+  privacyConsent: z
+    .boolean()
+    .default(false)
+    .refine((value) => value === true, {
+      message: "You must consent to privacy in order to proceed",
+    }),
+});
+
+export const CreateAppointmentSchema = z.object({
+
+  amount: z.string().optional(),
+  code: z.string().optional(),
+});
+
+export const ScheduleAppointmentSchema = z.object({
+  primaryPhysician: z.string().min(2, "Select at least one doctor"),
+  schedule: z.coerce.date(),
+  reason: z.string().optional(),
+  note: z.string().optional(),
+  cancellationReason: z.string().optional(),
+});
+export const CancelAppointmentSchema = z.object({
+  notification: z.string().min(2, "Select at least one doctor"),
+ 
+});
+
+export function getAppointmentSchema(type: string) {
+  switch (type) {
+    case "schedule":
+      return CreateAppointmentSchema;
+    case "cancel":
+      return CancelAppointmentSchema;
+    default:
+      return ScheduleAppointmentSchema;
+  }
 }

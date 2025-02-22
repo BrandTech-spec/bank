@@ -1,7 +1,7 @@
 const About = () => {
   return (
     <div>
-      <div className="w-full flex space-y-10 flex-col items-center justify-center ">
+      <div className="w-full flex space-y-10 flex-col px-2 text-gray-200 items-center justify-center ">
         <p className="text-[10px]">à propos de nous</p>
 
         <div className="mb-3 flex flex-col items-center justify-center">

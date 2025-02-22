@@ -1,6 +1,6 @@
-/* eslint-disable no-unused-vars */
 import { Control } from "react-hook-form";
 
+import { Checkbox } from "./ui/checkbox";
 import {
   FormControl,
   FormField,
@@ -9,6 +9,7 @@ import {
   FormMessage,
 } from "./ui/form";
 import { Input } from "./ui/input";
+import { Select, SelectContent, SelectTrigger, SelectValue } from "./ui/select";
 import { Textarea } from "./ui/textarea";
 
 export enum FormFieldType {
@@ -26,7 +27,7 @@ interface CustomProps {
   name: string;
   label?: string;
   placeholder?: string;
-  iconSrc?: React.ReactNode;
+  iconSrc?: string;
   iconAlt?: string;
   disabled?: boolean;
   dateFormat?: string;
@@ -37,13 +38,18 @@ interface CustomProps {
 }
 
 const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
-  const {iconSrc} = props
   switch (props.fieldType) {
     case FormFieldType.INPUT:
       return (
-        <div className="flex rounded-md items-center justify-center gap-2 border border-dark-500 bg-dark-400">
+        <div className="flex rounded-md border border-dark-500 bg-dark-400">
           {props.iconSrc && (
-            iconSrc
+            <img
+              src={props.iconSrc}
+              height={24}
+              width={24}
+              alt={props.iconAlt || "icon"}
+              className="ml-2"
+            />
           )}
           <FormControl>
             <Input
@@ -65,7 +71,26 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
           />
         </FormControl>
       );
-    
+
+
+
+    case FormFieldType.SELECT:
+      return (
+        <FormControl>
+          <Select onValueChange={field.onChange} defaultValue={field.value}>
+            <FormControl>
+              <SelectTrigger className="shad-select-trigger">
+                <SelectValue placeholder={props.placeholder} />
+              </SelectTrigger>
+            </FormControl>
+            <SelectContent className="shad-select-content">
+              {props.children}
+            </SelectContent>
+          </Select>
+        </FormControl>
+      );
+    case FormFieldType.SKELETON:
+      return props.renderSkeleton ? props.renderSkeleton(field) : null;
     default:
       return null;
   }

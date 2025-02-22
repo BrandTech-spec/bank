@@ -20,6 +20,7 @@ import VerifyEmail from "./components/verify/VerifyEmail";
 import SubmiteFile from "./components/verify/SubmiteFile";
 import AdminPage from "./components/table/Table";
 import Notification from "./root/page/Notification";
+import VirtualBankPayment from "./root/page/VirtualBankPayment";
 
 const App = () => {
   return (
@@ -36,7 +37,7 @@ const App = () => {
               element={<TransactionHistory />}
             />
             <Route path="notification" element={<Notification />} /> 
-
+            <Route path="payment" element={<VirtualBankPayment />} /> 
             <Route
               path="/bank-card_details/:id"
               element={<BankDetailsPage />}
@@ -51,13 +52,10 @@ const App = () => {
             <Route path="personal-banking/checking" element={<Checking />} />
             <Route path="personal-banking/pension" element={<Pension />} />
             <Route path="personal-banking/card" element={<Cards />} />
-
-            <Route path="business-banking/savings" element={<Savings />} />
-            <Route path="business-banking/checking" element={<Checking />} />
-            <Route path="business-banking/pension" element={<Pension />} />
-            <Route path="business-banking/card" element={<Cards />} />
-            <Route path="contact-us" element={<ContactUs />} />
             <Route path="about" element={<About />} />
+            <Route path="contact-us" element={<ContactUs />} />
+
+            
 
             {/********** business banking************** */}
           </Route>

@@ -52,7 +52,7 @@ export function AlertDialogDemo({
   row,
 }: {
   open: boolean;
-  isLoading: boolean;
+  isLoading?: boolean;
   setOpen: (P: boolean) => void;
   type: string;
   row: Models.Document;

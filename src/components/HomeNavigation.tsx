@@ -20,30 +20,20 @@ const HomeNavigation = () => {
   const [open, setOpen] = useState(false);
   const [style, setStyle] = useState("Savings");
   const routs = [
-    { name: "Accueil", path: "", type: types.LINK, subPaths: [] },
-    { name: "À propos de nous", path: "about", type: types.LINK, subPaths: [] },
+    { name: "Accueil", path: "/home", type: types.LINK, subPaths: [] },
+    { name: "À propos de nous", path: "/about", type: types.LINK, subPaths: [] },
     {
       name: "Banque personnelle",
       path: "personal-banking/savings",
       type: types.MODAL,
       subPaths: [
-        { name: "Économies", path: "personal-banking/savings" },
-        { name: "Comptes courants", path: "personal-banking/checking" },
-        { name: "Investissement & Retraite", path: "personal-banking/pension" },
-        { name: "Carte de crédit", path: "personal-banking/card" },
+        { name: "Économies", path: "/personal-banking/savings" },
+        { name: "Comptes courants", path: "/personal-banking/checking" },
+        { name: "Investissement & Retraite", path: "/personal-banking/pension" },
+        { name: "Carte de crédit", path: "/personal-banking/card" },
       ],
     },
-    {
-      name: "Banque d'affaires",
-      path: "business-banking/savings",
-      type: types.MODAL,
-      subPaths: [
-        { name: "Économies", path: "business-banking/checking" },
-        { name: "Comptes courants", path: "business-banking/checking" },
-        { name: "Investissement & Retraite", path: "business-banking/checking" },
-        { name: "Carte de crédit", path: "business-banking/checking" },
-      ],
-    },
+
     { name: "Contactez-nous", path: "/contact-us", type: types.LINK, subPaths: [] },
 ];
 
@@ -56,12 +46,12 @@ const HomeNavigation = () => {
             className="cursor-pointer w-8 h-8"
           />
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="bg-dark-300 text-white w-[90% ] " >
+      <DropdownMenuContent className="bg-s2 text-white w-auto p-4 " >
         <div className="flex items-start pl-3  flex-col justify-center gap-3 text-xs font-bold">
           {routs.map((rout) => {
             if (rout.type === types.LINK) {
               return (
-                <Link className="cursor-pointer" key={rout.name} to={rout.path}>
+                <Link className="cursor-pointer text-xl" key={rout.name} to={rout.path}>
                   <p>{rout.name}</p>
                   <Separator />
                 </Link>
@@ -72,7 +62,7 @@ const HomeNavigation = () => {
             
                   key={rout.name}
                 >
-                  <DropdownMenuTrigger className="outline-none border-0 ring-0 cursor-pointer">
+                  <DropdownMenuTrigger className="outline-none border-0 text-xl ring-0 cursor-pointer">
                     {rout.name}
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="bg-white px-4">
@@ -80,7 +70,7 @@ const HomeNavigation = () => {
                       <Link
                         key={i}
                         to={path.path}
-                        className={`space-y-2 hover:bg-blue-300 ${
+                        className={`space-y-2 text-xl hover:bg-blue-300 ${
                           path.path.includes(style) && "bg-blue-400"
                         }`}
                       >

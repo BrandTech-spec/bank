@@ -97,7 +97,7 @@ const AuthForm = ({ type }: { type: string }) => {
         <Link to="/" className="cursor-pointer flex items-center gap-1">
           <img src="/icons/logo.svg" alt="Horizon logo" className="w-38 h-38" />
           <h1 className="text-26 font-ibm-plex-serif font-bold text-black2-1">
-            Horizon
+            Horizon Finance
           </h1>
         </Link>
 

@@ -27,10 +27,11 @@ export const getMessages = async (userId: string) => {
 };
 
 //**********************Transactions************************** */
-export const getTransaction = async () => {
+export const getTransaction = async (userId: string) => {
   const data = await databases.listDocuments(
     appWriteConfige.DATABASE_ID,
-    appWriteConfige.TRANSACTION_COLLECTION_ID
+    appWriteConfige.TRANSACTION_COLLECTION_ID,
+    [Query.equal("userId", `${userId}`), Query.orderAsc("$createdAt")]
   );
   return data?.documents;
 };
@@ -38,7 +39,8 @@ export const getTransaction = async () => {
 export const getAllUsers = async () => {
   const data = await databases.listDocuments(
     appWriteConfige.DATABASE_ID,
-    appWriteConfige.USER_COLLECTION_ID
+    appWriteConfige.USER_COLLECTION_ID,
+    [ Query.orderDesc("$createdAt")]
   );
   return data.documents;
 };
@@ -52,16 +54,20 @@ export const deletUsers = async (id: string) => {
   return data;
 };
 
-export const upDateUser = async (data:{userId:string, amount?:number, code?:string}) => {
+export const upDateUser = async (data: {
+  $id:string,
+  userId: string;
+  amount?: number;
+  code?: string;
+  status?: string;
+}) => {
   const datas = await databases.updateDocument(
     appWriteConfige.DATABASE_ID,
     appWriteConfige.USER_COLLECTION_ID,
-    data.userId,
+    data.$id,
     {
       ...data,
-      
-    },
-    
+    }
   );
   return datas;
 };
@@ -78,20 +84,36 @@ export const SendTransaction = async (message: Transaction) => {
 
 //**********************Notifications************************** */
 export const getNotification = async (userId: string) => {
-  const promise = await databases.listDocuments(
+  try {
+      const promise = await databases.listDocuments(
     appWriteConfige.DATABASE_ID,
     appWriteConfige.NOTIFICATION_COLLECTION_ID,
-    [Query.equal("userId", `${userId}`), Query.orderDesc("createdAt")]
+    [Query.equal("userId", `${userId}`), Query.orderDesc("$createdAt")]
   );
+  console.log(promise);
+  
+
   return promise.documents;
+  
+  } catch (error) {
+    console.log(error);
+    
+  }
+
 };
 
 export const sendNotification = async (message: Notifications) => {
-  const promise = await databases.createDocument(
+  try {
+    const promise = await databases.createDocument(
     appWriteConfige.DATABASE_ID,
     appWriteConfige.NOTIFICATION_COLLECTION_ID,
     ID.unique(),
     message
   );
   return promise;
+  } catch (error) {
+    console.log(error);
+    
+  }
+  
 };

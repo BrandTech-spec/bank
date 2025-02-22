@@ -1,6 +1,7 @@
 import CreateBanks from "@/components/CreateBanks";
 import HeaderBox from "@/components/HeaderBox";
 import { CreditCard } from "lucide-react";
+import { Link } from "react-router-dom";
 //import { useState } from "react";
 
 const MyBanks =  () => {
@@ -95,11 +96,11 @@ const MyBanks =  () => {
           title="Mes comptes bancaires"
           subtext="Gérez vos activités bancaires en toute simplicité."
         />
-        <button  className="px-2 py-2 flex items-center gap-3 hover:bg-opacity-80 bg-bankGradient rounded-md text-white">
+        <Link to="/identity"  className="px-2 py-2 flex items-center gap-3 hover:bg-opacity-80 bg-bankGradient rounded-md text-white">
           <CreditCard className="lg:w-5 lg:h-5" />
           <p className="max-md:hidden ">Créer une carte</p>
 
-        </button>
+        </Link>
  
         </div>
 

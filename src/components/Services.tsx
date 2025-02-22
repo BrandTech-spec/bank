@@ -10,14 +10,13 @@ import { Loader, MessageCircle, User, X } from "lucide-react";
 
 import { useUserStore } from "@/actions/zustand/userState";
 import { CardsChat } from "./Chat";
- type FormValues = {
-    receiver: string;
-    sender: string;
-    admin: boolean;
-  };
-const Services = ({ receiver, sender, admin }:FormValues) => {
- 
-
+type FormValues = {
+  full_name: string;
+  email: string;
+  phone: string;
+  help: string;
+};
+const Services = () => {
   const [value, setValue] = useState("");
   console.log(value);
   const [messages, setMessages] = useState([]);
@@ -36,26 +35,28 @@ const Services = ({ receiver, sender, admin }:FormValues) => {
   } = useForm<FormValues>();
 
   const onSubmite = (data: FormValues) => {
-    console.log(data);
     setLoading(true);
     emailjs
       .send(
-        "service_m9pnrxm",
-        "template_ji8mymb",
+        "service_ofgw6zl",
+        "template_3oel94s",
         {
-
+          from_name: data.full_name,
+          from_email: data.email,
+          from_phone: data.phone,
+          message: data.help,
         },
-        "k8obTLwCkFlV08UAg"
+        "_v1mrf9su7HdlCiCM"
       )
       .then(
         () => {
           setLoading(false);
           toast.success(
-            "thank you for your thrust i will get back to you as soon as possible"
+            "Merci pour votre confiance, je reviendrai vers vous dès que possible"
           );
         },
         (error) => {
-          toast.error("faild to load the message please try again");
+          toast.error("échec du chargement du message, veuillez réessayer");
           console.log(error);
           setLoading(false);
         }
@@ -88,16 +89,16 @@ const Services = ({ receiver, sender, admin }:FormValues) => {
             </Avatar>
             <div className="chat-container  pt-2">
               <div className="container2">
-                <p className="message">Welcome to Horizon how can i help you</p>
+                <p className="message">bienvenu a  Horizon Finance how can i help you</p>
               </div>
             </div>
           </div>
         </div>
-        <div className="w-full h-full relative">
+        {/*<div className="w-full h-full relative">
           <span className="h-4 w-4 rounded-full bg-red-700 absolute top-1 right-1 text-center text-white text-xs">
             1
           </span>
-        </div>
+        </div>*/}
       </div>
       {/*<CardsChat setOpenChat={setOpen} receiver={receiver} sender={sender} admin={admin} />*/}
       <div
@@ -108,13 +109,16 @@ const Services = ({ receiver, sender, admin }:FormValues) => {
         <div className="text-black w-full flex items-baseline justify-between py-1 px-2 bg-slate-100 sticky top-0 inset-x-0">
           <div className="flex items-center justify-center gap-2 text-blue-500 font-bold ">
             <Avatar className="bg-gray-300">
-            <AvatarImage src="" alt="@shadcn" />
-            <AvatarFallback className=" uppercase font-bold text-white "><User/></AvatarFallback>
-          </Avatar>
-          <span>{user?.firstName[0]} {" "} {user?.lastName} </span>
+              <AvatarImage src="" alt="@shadcn" />
+              <AvatarFallback className=" uppercase font-bold text-white ">
+                <User />
+              </AvatarFallback>
+            </Avatar>
+            <span>
+              {user?.firstName[0]} {user?.lastName}{" "}
+            </span>
           </div>
-          
-          
+
           <X className=" cursor-pointer" onClick={() => openChart()} />
         </div>
 
